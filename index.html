@@ -78,6 +78,15 @@ footer{color:var(--mute);font-size:.85rem;padding:16px 0 40px}
 <p><span class="big">พรีออเดอร์ 149 บาท</span> <span class="small">(ราคาปกติ 299 บาท)</span></p>
 <p class="small">ส่งไฟล์ทางอีเมลภายใน 7 วันหลังสั่งซื้อ ถ้าไม่ได้รับหรือไม่พอใจ คืนเงินเต็มจำนวน</p>
 <a id="buy" class="btn" href="#kit" aria-disabled="true">เปิดพรีออเดอร์เร็ว ๆ นี้</a>
+<div id="pay" hidden>
+<ol>
+<li>สแกน QR พร้อมเพย์ด้านล่าง โอน <b>149 บาท</b></li>
+<li>กรอกฟอร์มสั่งซื้อ: อีเมลสำหรับรับไฟล์ + เวลาที่โอน</li>
+<li>เราตรวจยอดแล้วส่งไฟล์ให้ทางอีเมลภายใน 7 วัน ไม่ได้รับคืนเงินเต็มจำนวน</li>
+</ol>
+<img id="qr" alt="QR พร้อมเพย์ สำหรับชำระ 149 บาท" width="240" height="240" style="max-width:100%;height:auto;background:#fff;border-radius:8px">
+<p><a id="form" class="btn" rel="noopener" target="_blank">กรอกฟอร์มยืนยันการโอน</a></p>
+</div>
 </section>
 
 <section class="card" aria-labelledby="faq">
@@ -97,7 +106,9 @@ footer{color:var(--mute);font-size:.85rem;padding:16px 0 40px}
 
 <script>
 // ===== CONFIG: set after owner creates accounts. Never put secret keys here. =====
-const CHECKOUT_URL = ""; // e.g. Gumroad product URL (public link only)
+const CHECKOUT_URL = "";   // option A: hosted checkout product URL (public link only)
+const PROMPTPAY_QR = "";   // option B: path of the owner's bank-app PromptPay QR image in this repo, e.g. "promptpay-qr.png"
+const ORDER_FORM_URL = ""; // option B: public Google Form link (email + transfer time)
 
 const PLATFORMS = [
   {id:"shopee", name:"Shopee", fields:[
@@ -135,6 +146,11 @@ function build(){
   document.querySelectorAll("input").forEach(i => i.addEventListener("input", render));
   const buy = $("buy");
   if (/^https:\/\//.test(CHECKOUT_URL)) { buy.href = CHECKOUT_URL; buy.textContent = "สั่งพรีออเดอร์ 149 บาท"; buy.removeAttribute("aria-disabled"); buy.rel = "noopener"; }
+  else if (PROMPTPAY_QR && /^https:\/\//.test(ORDER_FORM_URL)) {
+    buy.textContent = "สั่งพรีออเดอร์ 149 บาท (พร้อมเพย์)"; buy.removeAttribute("aria-disabled");
+    $("qr").src = PROMPTPAY_QR; $("form").href = ORDER_FORM_URL;
+    buy.addEventListener("click", e => { e.preventDefault(); $("pay").hidden = false; $("pay").scrollIntoView({behavior:"smooth"}); });
+  }
   else buy.addEventListener("click", e => e.preventDefault());
 }
 
