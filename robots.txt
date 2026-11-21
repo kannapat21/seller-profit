@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://kannapat21.github.io/seller-profit/sitemap.xml
